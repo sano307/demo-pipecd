@@ -3,3 +3,17 @@ kind: KubernetesApp
 spec:
   input:
     kustomizeVersion: 3.8.5
+  pipeline:
+    stages:
+      - name: K8S_CANARY_ROLLOUT
+        with:
+          replicas: 100%
+      - name: K8S_TRAFFIC_ROUTING
+        with:
+          all: canary
+      - name: WAIT_APPROVAL
+      - name: K8S_PRIMARY_ROLLOUT
+      - name: K8S_TRAFFIC_ROUTING
+        with:
+          primary: 100
+      - name: K8S_CANARY_CLEAN
